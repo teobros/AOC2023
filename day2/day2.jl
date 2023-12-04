@@ -1,10 +1,12 @@
-lines = readlines("input.txt")
+# part 1
+lines = readlines("input_test.txt")
 
 function preprocess(line)
     # ignore before :
     extractions = line[findfirst(isequal(':'),line)+2:end] 
     # split at ;
     extractions=split(extractions, ";")
+    # read the rgb values from each line
     rgb = zeros(Int,size(extractions,1),3)
     for i in range(1,size(extractions,1))
         entries = extractions[i]
@@ -31,3 +33,11 @@ end
 id_correct = map(isvalid,rgb)
 ids = range(1,size(id_correct,1))
 answer1 = sum(ids[id_correct])
+# part 2
+function reqs_per_game(entry)
+    reqs =  maximum(entry,dims=1)
+    power = prod(reqs)
+end
+
+powers = map(reqs_per_game, rgb)
+answer2 = sum(powers)
