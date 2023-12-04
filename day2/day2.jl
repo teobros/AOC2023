@@ -1,4 +1,4 @@
-lines = readlines("input_test.txt")
+lines = readlines("input.txt")
 
 function preprocess(line)
     # ignore before :
@@ -23,3 +23,11 @@ function preprocess(line)
 end
 
 rgb = map(preprocess, lines)
+
+function isvalid(entry)
+    return all(entry[:,1].<=12) & all(entry[:,2].<=13) & all(entry[:,3].<=14)
+end
+
+id_correct = map(isvalid,rgb)
+ids = range(1,size(id_correct,1))
+answer1 = sum(ids[id_correct])
