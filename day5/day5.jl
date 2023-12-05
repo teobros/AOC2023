@@ -34,32 +34,30 @@ function source2dest(source,map)
     return dest
 end
 
-
+# read all the maps
 seed_to_soil, nlines = get_map(lines)
+deleteat!(lines, 1:nlines+1)
+soil_to_fertilizer, nlines = get_map(lines)
+deleteat!(lines, 1:nlines+1)
+fertilizer_to_water, nlines = get_map(lines)
+deleteat!(lines, 1:nlines+1)
 soils = map(x->source2dest(x,seed_to_soil), seeds)
 deleteat!(lines, 1:nlines+1)
-
-soil_to_fertilizer, nlines = get_map(lines)
-fertilizers = map(x->source2dest(x,soil_to_fertilizer), soils)
-deleteat!(lines, 1:nlines+1)
-
-fertilizer_to_water, nlines = get_map(lines)
-waters = map(x->source2dest(x,fertilizer_to_water), fertilizers)
-deleteat!(lines, 1:nlines+1)
-
 water_to_light, nlines = get_map(lines)
-lights = map(x->source2dest(x,water_to_light), waters)
 deleteat!(lines, 1:nlines+1)
-
 light_to_temperature, nlines = get_map(lines)
-temperatures = map(x->source2dest(x,light_to_temperature), lights)
 deleteat!(lines, 1:nlines+1)
-
 temperature_to_humidity, nlines = get_map(lines)
-humidities = map(x->source2dest(x,temperature_to_humidity), temperatures)
+deleteat!(lines, 1:nlines+1)
+humidity_to_location, nlines = get_map(lines)
 deleteat!(lines, 1:nlines+1)
 
-humidity_to_location, nlines = get_map(lines)
+# do the mapping step by step
+fertilizers = map(x->source2dest(x,soil_to_fertilizer), soils)
+waters = map(x->source2dest(x,fertilizer_to_water), fertilizers)
+lights = map(x->source2dest(x,water_to_light), waters)
+temperatures = map(x->source2dest(x,light_to_temperature), lights)
+humidities = map(x->source2dest(x,temperature_to_humidity), temperatures)
 locations = map(x->source2dest(x,humidity_to_location), humidities)
 
 answer1 = minimum(locations)
