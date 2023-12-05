@@ -59,3 +59,26 @@ humidities = map(x->source2dest(x,temperature_to_humidity), temperatures)
 locations = map(x->source2dest(x,humidity_to_location), humidities)
 
 answer1 = minimum(locations)
+## part 2
+function seeds_range(seeds)
+    seeds = seeds[1]:(seeds[1]+seeds[2]-1)
+    return seeds
+end
+
+a = seeds_range(seeds[1:2])
+
+function seedrange_to_location(seed_range)
+    temp = map(x->source2dest(x,seed_to_soil),seed_range)
+    temp = map(x->source2dest(x,soil_to_fertilizer), temp)
+    temp = map(x->source2dest(x,fertilizer_to_water), temp)
+    temp = map(x->source2dest(x,water_to_light), temp)
+    temp = map(x->source2dest(x,light_to_temperature), temp)
+    temp = map(x->source2dest(x,temperature_to_humidity), temp)
+    locations = map(x->source2dest(x,humidity_to_location), temp)
+    return minimum(locations)
+end
+seeds = reshape(seeds,(2,Int(length(seeds)/2)))
+seedranges = map(seeds_range, eachcol(seeds))
+
+locations = map(seedrange_to_location,seedranges)
+
