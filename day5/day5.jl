@@ -1,4 +1,4 @@
-lines = readlines("input.txt")
+lines = readlines("input_test.txt")
 
 # get seeds
 seeds = lines[1][findfirst(isequal(':'),lines[1])+2:end]
@@ -49,14 +49,19 @@ temperature_to_humidity, nlines = get_map(lines)
 deleteat!(lines, 1:nlines+1)
 humidity_to_location, nlines = get_map(lines)
 
-# do the mapping step by step
-soils = map(x->source2dest(x,seed_to_soil),seeds)
-fertilizers = map(x->source2dest(x,soil_to_fertilizer), soils)
-waters = map(x->source2dest(x,fertilizer_to_water), fertilizers)
-lights = map(x->source2dest(x,water_to_light), waters)
-temperatures = map(x->source2dest(x,light_to_temperature), lights)
-humidities = map(x->source2dest(x,temperature_to_humidity), temperatures)
-locations = map(x->source2dest(x,humidity_to_location), humidities)
+function seed_to_location(seed)
+    # do the mapping step by step
+    temp = source2dest(seed,seed_to_soil)
+    temp = source2dest(temp,soil_to_fertilizer)
+    temp = source2dest(temp,fertilizer_to_water)
+    temp = source2dest(temp,water_to_light)
+    temp = source2dest(temp,light_to_temperature)
+    temp = source2dest(temp,temperature_to_humidity)
+    location = source2dest(temp,humidity_to_location)
+    return location
+end
+
+locations = map(seed_to_location, seeds)
 
 answer1 = minimum(locations)
 ## part 2
@@ -65,20 +70,12 @@ function seeds_range(seeds)
     return seeds
 end
 
-a = seeds_range(seeds[1:2])
-
-function seedrange_to_location(seed_range)
-    temp = map(x->source2dest(x,seed_to_soil),seed_range)
-    temp = map(x->source2dest(x,soil_to_fertilizer), temp)
-    temp = map(x->source2dest(x,fertilizer_to_water), temp)
-    temp = map(x->source2dest(x,water_to_light), temp)
-    temp = map(x->source2dest(x,light_to_temperature), temp)
-    temp = map(x->source2dest(x,temperature_to_humidity), temp)
-    locations = map(x->source2dest(x,humidity_to_location), temp)
-    return minimum(locations)
-end
 seeds = reshape(seeds,(2,Int(length(seeds)/2)))
 seedranges = map(seeds_range, eachcol(seeds))
 
-locations = map(seedrange_to_location,seedranges)
+locations2 = zeros(Int,size(seedranges))
+for irange in 1:length(locations2)
+    locations2[irange] = minimum(map(seed_to_location, seedranges[irange]))
+end
 
+minimum(locations2)
