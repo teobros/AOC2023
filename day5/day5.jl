@@ -1,4 +1,4 @@
-lines = readlines("input_test.txt")
+lines = readlines("input.txt")
 
 # get seeds
 seeds = lines[1][findfirst(isequal(':'),lines[1])+2:end]
@@ -78,4 +78,4 @@ for irange in 1:length(locations2)
     locations2[irange] = minimum(map(seed_to_location, seedranges[irange]))
 end
 
-minimum(locations2)
+answer2 = minimum(locations2)
