@@ -1,4 +1,6 @@
-lines = readlines("input.txt")
+using Distributed
+
+lines = readlines("input_test.txt")
 
 # get seeds
 seeds = lines[1][findfirst(isequal(':'),lines[1])+2:end]
@@ -64,6 +66,7 @@ end
 locations = map(seed_to_location, seeds)
 
 answer1 = minimum(locations)
+println("answer 1: ", string(answer1))
 ## part 2
 function seeds_range(seeds)
     seeds = seeds[1]:(seeds[1]+seeds[2]-1)
@@ -74,8 +77,9 @@ seeds = reshape(seeds,(2,Int(length(seeds)/2)))
 seedranges = map(seeds_range, eachcol(seeds))
 
 locations2 = zeros(Int,size(seedranges))
-for irange in 1:length(locations2)
+Threads.@threads for irange in 1:length(locations2)
     locations2[irange] = minimum(map(seed_to_location, seedranges[irange]))
 end
 
 answer2 = minimum(locations2)
+println("answer 2: ", string(answer2))
