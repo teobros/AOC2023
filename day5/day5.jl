@@ -24,20 +24,6 @@ function get_map(lines)
     return parsed_map, idx_line
 end
 
-seed_to_soil, nlines = get_map(lines)
-deleteat!(lines, 1:nlines+1)
-soil_to_fertilizer, nlines = get_map(lines)
-deleteat!(lines, 1:nlines+1)
-fertilizer_to_water, nlines = get_map(lines)
-deleteat!(lines, 1:nlines+1)
-water_to_light, nlines = get_map(lines)
-deleteat!(lines, 1:nlines+1)
-light_to_temperature, nlines = get_map(lines)
-deleteat!(lines, 1:nlines+1)
-temperature_to_humidity, nlines = get_map(lines)
-deleteat!(lines, 1:nlines+1)
-humidity_to_location, nlines = get_map(lines)
-
 function expand_map(map_orig)
     source = reshape([],0,1)
     destination_temp = reshape([],0,1)
@@ -50,14 +36,6 @@ function expand_map(map_orig)
     destination[source] = destination_temp
     return destination
 end
-
-seed_to_soil = expand_map(seed_to_soil)
-soil_to_fertilizer = expand_map(soil_to_fertilizer)
-fertilizer_to_water = expand_map(fertilizer_to_water)
-water_to_light = expand_map(water_to_light)
-light_to_temperature = expand_map(light_to_temperature)
-temperature_to_humidity = expand_map(temperature_to_humidity)
-humidity_to_location = expand_map(humidity_to_location)
 
 function location(seed,maps_sequence)
     destination = source2dest(seed,maps_sequence[1])
@@ -75,5 +53,39 @@ function source2dest(source,map)
     return dest
 end
 
-locations = map(x->location(x,(seed_to_soil, soil_to_fertilizer, fertilizer_to_water, water_to_light, light_to_temperature, temperature_to_humidity,humidity_to_location)), seeds)
+
+seed_to_soil, nlines = get_map(lines)
+mapping = expand_map(seed_to_soil)
+soils = map(x->source2dest(x,mapping), seeds)
+deleteat!(lines, 1:nlines+1)
+
+soil_to_fertilizer, nlines = get_map(lines)
+mapping = expand_map(soil_to_fertilizer)
+fertilizers = map(x->source2dest(x,mapping), soils)
+deleteat!(lines, 1:nlines+1)
+
+fertilizer_to_water, nlines = get_map(lines)
+mapping = expand_map(fertilizer_to_water)
+waters = map(x->source2dest(x,mapping), fertilizers)
+deleteat!(lines, 1:nlines+1)
+
+water_to_light, nlines = get_map(lines)
+mapping = expand_map(water_to_light)
+lights = map(x->source2dest(x,mapping), waters)
+deleteat!(lines, 1:nlines+1)
+
+light_to_temperature, nlines = get_map(lines)
+mapping = expand_map(light_to_temperature)
+temperatures = map(x->source2dest(x,mapping), lights)
+deleteat!(lines, 1:nlines+1)
+
+temperature_to_humidity, nlines = get_map(lines)
+mapping = expand_map(temperature_to_humidity)
+humidities = map(x->source2dest(x,mapping), temperatures)
+deleteat!(lines, 1:nlines+1)
+
+humidity_to_location, nlines = get_map(lines)
+mapping = expand_map(humidity_to_location)
+locations = map(x->source2dest(x,mapping), humidities)
+
 answer1 = minimum(locations)
