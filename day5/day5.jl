@@ -50,6 +50,7 @@ deleteat!(lines, 1:nlines+1)
 humidity_to_location, nlines = get_map(lines)
 
 # do the mapping step by step
+soils = map(x->source2dest(x,seed_to_soil),seeds)
 fertilizers = map(x->source2dest(x,soil_to_fertilizer), soils)
 waters = map(x->source2dest(x,fertilizer_to_water), fertilizers)
 lights = map(x->source2dest(x,water_to_light), waters)
