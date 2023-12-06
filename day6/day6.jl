@@ -1,4 +1,4 @@
-lines = readlines("input_test.txt")
+lines = readlines("input.txt")
 
 function line2vec(line)
     line = line[findfirst(isequal(':'),line)+2:end]
@@ -35,3 +35,5 @@ end
 
 time2 = vec2total(time)
 distance2 = vec2total(distance)
+
+answer2 = racewins(time2,distance2)
