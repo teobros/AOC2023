@@ -1,11 +1,9 @@
-lines = readlines("input.txt")
+lines = readlines("input_test.txt")
 
 f=line->[x for x in split(line)]
 matches = map(f,lines)
 hands = [match[1] for match in matches]
-hands = ["66922"; "66JAA"; "66AA4"]
 bets = [parse(Int,match[2]) for match in matches]
-bets = 1:3
 
 function hand2score(hand)
     # Convert the hand to a score. The score is assigned like this:
